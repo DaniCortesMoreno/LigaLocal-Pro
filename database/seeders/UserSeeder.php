@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-
+use App\Models\User;
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
+
         DB::table('users')->insert([
             [
                 'nombre' => 'Admin',

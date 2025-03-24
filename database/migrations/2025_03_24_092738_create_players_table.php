@@ -12,13 +12,13 @@ return new class extends Migration {
             $table->string('apellidos');
             $table->integer('edad');
             $table->integer('dorsal');
-            $table->string('posición'); // También puedes usar enum si lo prefieres
+            $table->string('posición')->nullable()->default(null); // También puedes usar enum si lo prefieres
             $table->enum('estado', ['activo', 'lesionado', 'suspendido'])->default('activo');
-            $table->integer('goles')->default(0);
-            $table->integer('asistencias')->default(0);
-            $table->integer('amarillas')->default(0);
-            $table->integer('rojas')->default(0);
-            $table->integer('cantidad_partidos')->default(0);
+            $table->integer('goles')->default(0)->nullable();
+            $table->integer('asistencias')->default(0)->nullable();
+            $table->integer('amarillas')->default(0)->nullable();
+            $table->integer('rojas')->default(0)->nullable();
+            $table->integer('cantidad_partidos')->default(0)->nullable();
             $table->string('foto')->nullable();
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->timestamps();
