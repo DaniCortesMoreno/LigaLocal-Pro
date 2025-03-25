@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('cantidad_jugadores');
             $table->enum('estado', ['pendiente', 'en_curso', 'finalizado'])->default('pendiente');
             $table->enum('formato', ['liguilla', 'eliminacion', 'grupos_playoffs']);
+            $table->enum('visibilidad', ['publico', 'privado'])->default('privado');
             $table->text('reglamento')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

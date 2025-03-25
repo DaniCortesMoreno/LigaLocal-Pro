@@ -39,7 +39,6 @@ class PlayerSeeder extends Seeder
             }
 
             // Actualizar número de jugadores del equipo
-            $team->numero_jugadores = 10;
             $team->save();
         }
     }

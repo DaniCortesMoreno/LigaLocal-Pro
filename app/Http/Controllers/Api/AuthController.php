@@ -10,50 +10,19 @@ use App\Models\User;
 
 class AuthController extends BaseController
 {
-    /**
-     * @OA\Post(
-     *     path="/api/login",
-     *     summary="Autenticació de l'usuari",
-     *     tags={"Autenticació"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", format="email", example="1@manager.com"),
-     *             @OA\Property(property="password", type="string", example="1234"),
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Login correcte",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="token", type="string", example="jwt-token"),
-     *                 @OA\Property(property="name", type="string", example="John Doe")
-     *             ),
-     *             @OA\Property(property="message", type="string", example="User signed in")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="No autoritzat",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Unauthorised."),
-     *             @OA\Property(property="info", type="object",
-     *                 @OA\Property(property="error", type="string", example="incorrect Email/Password")
-     *             )
-     *         )
-     *     )
-     * )
-     */
     public function login(Request $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $authUser = Auth::user();
             $result['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken;
-            $result['name'] =  $authUser->name;
+            $result['user'] = [
+                'nombre' =>  $authUser->nombre,
+                'apellidos' =>  $authUser->apellidos,
+                'email' =>  $authUser->email,
+                'rol' =>  $authUser->rol,
+                'id' =>  $authUser->id,
+            ];
+            
 
             return $this->sendResponse($result, 'User signed in');
         }
@@ -62,7 +31,7 @@ class AuthController extends BaseController
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'nombre' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'confirm_password' => 'required|same:password',
@@ -77,7 +46,7 @@ class AuthController extends BaseController
             $input['password'] = bcrypt($input['password']);
             $user = User::create($input);
             $result['token'] =  $user->createToken('MyAuthApp')->plainTextToken;
-            $result['name'] =  $user->name;
+            $result['nombre'] =  $user->nombre;
 
             return $this->sendResponse($result, 'User created successfully.');
         } catch (\Exception $e) {
@@ -89,7 +58,7 @@ class AuthController extends BaseController
 
         $user = request()->user(); //or Auth::user()
         $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
-        $success['name'] =  $user->name;
+        $success['nombre'] =  $user->nombre;
          return $this->sendResponse($success, 'User successfully signed out.');
     }
 

@@ -12,7 +12,6 @@ class Team extends Model
     protected $fillable = [
         'nombre',
         'logo',
-        'numero_jugadores',
         'color_equipacion',
         'entrenador',
         'tournament_id',
@@ -24,8 +23,19 @@ class Team extends Model
     }
 
     public function players()
-{
-    return $this->hasMany(Player::class);
-}
+    {
+        return $this->hasMany(Player::class);
+    }
+
+    public function homeMatches()
+    {
+        return $this->hasMany(MatchGame::class, 'team1_id');
+    }
+
+    public function awayMatches()
+    {
+        return $this->hasMany(MatchGame::class, 'team2_id');
+    }
+
 
 }

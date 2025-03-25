@@ -22,7 +22,6 @@ class TeamSeeder extends Seeder
                 Team::create([
                     'nombre' => 'Equipo ' . $i . ' - ' . $tournament->nombre,
                     'logo' => null,
-                    'numero_jugadores' => 0,
                     'color_equipacion' => 'Rojo',
                     'entrenador' => 'Entrenador ' . $i,
                     'tournament_id' => $tournament->id,

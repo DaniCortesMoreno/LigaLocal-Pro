@@ -34,6 +34,7 @@ class TournamentSeeder extends Seeder
             'formato' => 'liguilla',
             'reglamento' => 'Todos contra todos a una vuelta. Puntos: 3-1-0.',
             'user_id' => $gestor->id,
+            'visibilidad' => 'publico',
         ]);
 
         Tournament::create([
@@ -47,6 +48,21 @@ class TournamentSeeder extends Seeder
             'formato' => 'eliminacion',
             'reglamento' => 'Eliminación directa con partidos únicos.',
             'user_id' => $gestor->id,
+            'visibilidad' => 'publico',
+        ]);
+
+        Tournament::create([
+            'nombre' => 'Liga Invernal Fútbol 11',
+            'tipo' => 'futbol11',
+            'fecha_inicio' => Carbon::now()->addDays(7),
+            'fecha_fin' => Carbon::now()->addMonths(2),
+            'cantidad_equipos' => 8,
+            'cantidad_jugadores' => 12,
+            'estado' => 'pendiente',
+            'formato' => 'liguilla',
+            'reglamento' => 'Todos contra todos a doble vuelta. Puntos: 3-1-0.',
+            'user_id' => $gestor->id,
+            'visibilidad' => 'privado',
         ]);
     }
 }

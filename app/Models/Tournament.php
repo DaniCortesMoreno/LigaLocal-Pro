@@ -18,6 +18,7 @@ class Tournament extends Model
         'formato',
         'reglamento',
         'user_id',
+        'visibilidad'
     ];
 
     public function user()
@@ -26,7 +27,13 @@ class Tournament extends Model
     }
 
     public function teams()
-{
-    return $this->hasMany(Team::class);
-}
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    public function matches()
+    {
+        return $this->hasMany(MatchGame::class);
+    }
+
 }
