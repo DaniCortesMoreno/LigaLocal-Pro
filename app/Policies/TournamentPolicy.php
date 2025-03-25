@@ -21,7 +21,8 @@ class TournamentPolicy
      */
     public function view(User $user, Tournament $tournament): bool
     {
-        return $tournament->visibilidad === 'publico' || $user->id === $tournament->user_id || $user->rol === 'admin';
+        return true;
+        //return $tournament->visibilidad === 'publico' || $user->id === $tournament->user_id || $user->rol === 'admin';
     }
 
     /**
@@ -29,7 +30,7 @@ class TournamentPolicy
      */
     public function create(User $user): bool
     {
-        return true; // Todo el mundo puede crear torneos
+        return true; // Todo los usuarios registrados pueden crear torneos
     }
 
     /**
