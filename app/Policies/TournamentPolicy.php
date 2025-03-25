@@ -13,7 +13,7 @@ class TournamentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return true; // Todos los usuarios pueden ver torneos
     }
 
     /**
@@ -21,7 +21,7 @@ class TournamentPolicy
      */
     public function view(User $user, Tournament $tournament): bool
     {
-        return true;
+        return $tournament->visibilidad === 'publico' || $user->id === $tournament->user_id || $user->rol === 'admin';
     }
 
     /**
@@ -29,7 +29,7 @@ class TournamentPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return true; // Todo el mundo puede crear torneos
     }
 
     /**
@@ -45,7 +45,7 @@ class TournamentPolicy
      */
     public function delete(User $user, Tournament $tournament): bool
     {
-        return $user->id === $tournament->user_id || $user->rol === 'admin';;
+        return $user->id === $tournament->user_id || $user->rol === 'admin';
     }
 
     /**
@@ -53,7 +53,7 @@ class TournamentPolicy
      */
     public function restore(User $user, Tournament $tournament): bool
     {
-        return false;
+        return $user->rol === 'admin';
     }
 
     /**

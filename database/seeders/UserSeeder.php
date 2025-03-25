@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
                 'apellidos' => 'Liga',
                 'email' => 'gestor@ligalocal.com',
                 'password' => Hash::make('gestor123'),
-                'rol' => 'gestor',
+                'rol' => 'usuario',
                 'fecha_registro' => Carbon::now(),
                 'ultimo_login' => null,
                 'remember_token' => Str::random(10),

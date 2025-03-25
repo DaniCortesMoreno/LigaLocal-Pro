@@ -38,7 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/admin-area', fn() => 'Bienvenido, Admin');
     });
     
-    Route::middleware(['auth:sanctum', 'role:admin,gestor'])->group(function () {
+    /*Route::middleware(['auth:sanctum', 'role:admin,gestor'])->group(function () {
         Route::apiResource('tournaments', TournamentController::class);
-    });
+    });*/
 });

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('apellidos');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('rol', ['admin', 'gestor', 'usuario'])->default('usuario');
+            $table->enum('rol', ['admin', 'usuario'])->default('usuario');
             $table->timestamp('fecha_registro')->useCurrent();
             $table->timestamp('ultimo_login')->nullable();
             $table->rememberToken();

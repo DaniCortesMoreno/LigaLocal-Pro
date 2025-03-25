@@ -14,14 +14,6 @@ class TournamentSeeder extends Seeder
      */
     public function run(): void
     {
-        // Obtener el gestor de liga existente
-        $gestor = User::where('rol', 'gestor')->first();
-
-        if (!$gestor) {
-            $this->command->warn('❗ No se encontró ningún usuario con rol "gestor". No se crearon torneos.');
-            return;
-        }
-
         // Crear torneos de ejemplo
         Tournament::create([
             'nombre' => 'Liga Primavera Fútbol 7',
@@ -33,7 +25,7 @@ class TournamentSeeder extends Seeder
             'estado' => 'pendiente',
             'formato' => 'liguilla',
             'reglamento' => 'Todos contra todos a una vuelta. Puntos: 3-1-0.',
-            'user_id' => $gestor->id,
+            'user_id' => 2,
             'visibilidad' => 'publico',
         ]);
 
@@ -47,7 +39,7 @@ class TournamentSeeder extends Seeder
             'estado' => 'pendiente',
             'formato' => 'eliminacion',
             'reglamento' => 'Eliminación directa con partidos únicos.',
-            'user_id' => $gestor->id,
+            'user_id' => 2,
             'visibilidad' => 'publico',
         ]);
 
@@ -61,7 +53,7 @@ class TournamentSeeder extends Seeder
             'estado' => 'pendiente',
             'formato' => 'liguilla',
             'reglamento' => 'Todos contra todos a doble vuelta. Puntos: 3-1-0.',
-            'user_id' => $gestor->id,
+            'user_id' => 3,
             'visibilidad' => 'privado',
         ]);
     }
