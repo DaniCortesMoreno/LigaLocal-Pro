@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Team;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TeamController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         return response()->json(['success' => true, 'data' => Team::all()]);
@@ -15,6 +18,7 @@ class TeamController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'tournament_id' => 'required|exists:tournaments,id',
@@ -22,6 +26,9 @@ class TeamController extends Controller
             'color_equipacion' => 'nullable|string',
             'entrenador' => 'nullable|string',
         ]);
+
+        $tournament = Tournament::findOrFail($request->tournament_id);
+        $this->authorize('create', [Team::class, $tournament]);
 
         $team = Team::create($validated);
 

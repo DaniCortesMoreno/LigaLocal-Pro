@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Team;
+use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -27,10 +28,16 @@ class TeamPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Tournament $tournament): bool
     {
-        return false;
+        return $tournament->user_id === $user->id || $user->role === 'admin';
     }
+
+    public function createForTournament(User $user, Tournament $tournament)
+    {
+        return $user->id === $tournament->user_id || $user->role === 'admin';
+    }
+
 
     /**
      * Determine whether the user can update the model.
