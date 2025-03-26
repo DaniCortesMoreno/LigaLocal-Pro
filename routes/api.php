@@ -13,7 +13,8 @@ use App\Http\Controllers\Api\PlayerController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/tournaments/public', [TournamentController::class, 'publicTournaments']);
-
+Route::get('tournaments/{tournament}', [TournamentController::class, 'show']);
+Route::get('users/{user}', [UserController::class, 'show']);
 // Rutas protegidas
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -25,12 +26,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // CRUDs
     Route::get('/tournaments/private', [TournamentController::class, 'privateTournaments']);
     Route::get('/tournaments/user/{id}', [TournamentController::class, 'tournamentsByUser']);
-    Route::apiResource('tournaments', TournamentController::class);
+    Route::apiResource('tournaments', TournamentController::class)->except(['show']);
     Route::apiResource('teams', TeamController::class);
     Route::apiResource('players', PlayerController::class);
     Route::apiResource('teams', TeamController::class);
     Route::apiResource('match_games', MatchGameController::class);
-    Route::apiResource('users', UserController::class)->except(['store']);
+    Route::apiResource('users', UserController::class)->except(['store', 'show']);
 
     // Aquí podrías aplicar roles cuando tengas el middleware
     // Route::middleware('role:admin')->group(...);
