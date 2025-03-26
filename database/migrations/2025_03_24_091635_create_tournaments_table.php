@@ -15,9 +15,9 @@ return new class extends Migration
             $table->string('nombre');
             $table->enum('tipo', ['sala', 'futbol7', 'futbol11']);
             $table->date('fecha_inicio');
-            $table->date('fecha_fin');
-            $table->integer('cantidad_equipos');
-            $table->integer('cantidad_jugadores');
+            $table->date('fecha_fin')->nullable();
+            $table->integer('cantidad_equipos')->nullable()->default(0);
+            $table->integer('cantidad_jugadores')->nullable()->default(0);
             $table->enum('estado', ['pendiente', 'en_curso', 'finalizado'])->default('pendiente');
             $table->enum('formato', ['liguilla', 'eliminacion', 'grupos_playoffs']);
             $table->enum('visibilidad', ['publico', 'privado'])->default('privado');
