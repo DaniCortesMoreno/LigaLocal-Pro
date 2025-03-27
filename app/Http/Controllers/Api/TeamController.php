@@ -75,4 +75,37 @@ class TeamController extends Controller
         $team->delete();
         return response()->json(['success' => true, 'message' => 'Equipo eliminado correctamente.']);
     }
+
+    public function getByTournament($tournamentId)
+    {
+        $teams = Team::where('tournament_id', $tournamentId)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $teams,
+        ]);
+    }
+
+    public function storeForTournament(Request $request, Tournament $tournament)
+    {
+        $this->authorize('createTeamForTournament', $tournament);
+
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'color_equipacion' => 'nullable|string|max:255',
+            'entrenador' => 'nullable|string|max:255',
+        ]);
+
+        $team = Team::create([
+            'nombre' => $validated['nombre'],
+            'color_equipacion' => $validated['color_equipacion'] ?? null,
+            'entrenador' => $validated['entrenador'] ?? null,
+            'tournament_id' => $tournament->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $team,
+        ], 201);
+    }
 }

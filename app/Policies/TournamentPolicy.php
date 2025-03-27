@@ -64,4 +64,9 @@ class TournamentPolicy
     {
         return false;
     }
+    public function createTeamForTournament(User $user, Tournament $tournament): bool
+    {
+        return $user->id === $tournament->user_id || $user->rol === 'admin';
+    }
+
 }

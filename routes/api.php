@@ -14,7 +14,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/tournaments/public', [TournamentController::class, 'publicTournaments']);
 Route::get('tournaments/{tournament}', [TournamentController::class, 'show']);
+Route::get('/tournaments/{tournament}/teams', [TeamController::class, 'getByTournament']);
 Route::get('users/{user}', [UserController::class, 'show']);
+Route::middleware('auth:sanctum')->post('/tournaments/{tournament}/teams', [TeamController::class, 'storeForTournament']);
+
 // Rutas protegidas
 Route::middleware(['auth:sanctum'])->group(function () {
 
