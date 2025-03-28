@@ -13,10 +13,30 @@ class TournamentController extends Controller
         return Tournament::with('user')->get();
     }
 
-    public function show($id)
+    public function show(Tournament $tournament)
     {
-        return Tournament::with('teams', 'user')->findOrFail($id);
+        if ($tournament->visibilidad === 'publico') {
+            return response()->json([
+                'success' => true,
+                'data' => $tournament
+            ]);
+        }
+
+        $user = auth('sanctum')->user();
+
+        if (!$user || $user->id !== $tournament->user_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permisos para ver este torneo privado.'
+            ], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $tournament
+        ]);
     }
+
 
     public function teams($id)
     {
@@ -80,7 +100,7 @@ class TournamentController extends Controller
         return response()->json(['success' => true, 'data' => $tournaments]);
     }
 
-    public function privateTournaments() 
+    public function privateTournaments()
     {
         $user = Auth::user();
 
@@ -95,21 +115,21 @@ class TournamentController extends Controller
     }
 
     public function tournamentsByUser($id)
-{
-    $tournaments = Tournament::where('user_id', $id)->get();
+    {
+        $tournaments = Tournament::where('user_id', $id)->get();
 
-    if ($tournaments->isEmpty()) {
+        if ($tournaments->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este usuario no ha creado ningún torneo.'
+            ], 404);
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'Este usuario no ha creado ningún torneo.'
-        ], 404);
+            'success' => true,
+            'data' => $tournaments
+        ]);
     }
-
-    return response()->json([
-        'success' => true,
-        'data' => $tournaments
-    ]);
-}
 
 
 }

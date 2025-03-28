@@ -17,6 +17,9 @@ Route::get('tournaments/{tournament}', [TournamentController::class, 'show']);
 Route::get('/tournaments/{tournament}/teams', [TeamController::class, 'getByTournament']);
 Route::get('users/{user}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->post('/tournaments/{tournament}/teams', [TeamController::class, 'storeForTournament']);
+Route::get('/teams/{team}/players', [PlayerController::class, 'getPlayersByTeam']);
+Route::get('/teams/{team}', [TeamController::class, 'show']);
+
 
 // Rutas protegidas
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -30,9 +33,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/tournaments/private', [TournamentController::class, 'privateTournaments']);
     Route::get('/tournaments/user/{id}', [TournamentController::class, 'tournamentsByUser']);
     Route::apiResource('tournaments', TournamentController::class)->except(['show']);
-    Route::apiResource('teams', TeamController::class);
+    Route::apiResource('teams', TeamController::class)->except(['show']);
     Route::apiResource('players', PlayerController::class);
-    Route::apiResource('teams', TeamController::class);
     Route::apiResource('match_games', MatchGameController::class);
     Route::apiResource('users', UserController::class)->except(['store', 'show']);
 

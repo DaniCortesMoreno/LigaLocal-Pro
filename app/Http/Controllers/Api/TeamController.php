@@ -76,15 +76,23 @@ class TeamController extends Controller
         return response()->json(['success' => true, 'message' => 'Equipo eliminado correctamente.']);
     }
 
-    public function getByTournament($tournamentId)
+    public function getByTournament(Tournament $tournament)
     {
-        $teams = Team::where('tournament_id', $tournamentId)->get();
+        // Si es privado y no tienes permiso para verlo, no puedes ver los equipos
+        if ($tournament->visibilidad === 'privado' && !$this->authorize('view', $tournament)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permiso para ver los equipos de este torneo privado.'
+            ], 403);
+        }
 
+        $teams = $tournament->teams; // O usar relación si la tienes definida
         return response()->json([
             'success' => true,
-            'data' => $teams,
+            'data' => $teams
         ]);
     }
+
 
     public function storeForTournament(Request $request, Tournament $tournament)
     {

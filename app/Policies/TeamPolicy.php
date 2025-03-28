@@ -14,15 +14,15 @@ class TeamPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Team $team): bool
+    public function view(?User $user, Team $team): bool
     {
-        return false;
+        return true;
     }
 
     /**

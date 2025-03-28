@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use App\Models\Player;
 use Illuminate\Support\Facades\Validator;
@@ -81,4 +82,22 @@ class PlayerController extends Controller
         $player->delete();
         return response()->json(['message' => 'Jugador eliminado']);
     }
+
+    public function getPlayersByTeam($teamId)
+    {
+        $team = Team::with('players')->find($teamId);
+
+        if (!$team) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Equipo no encontrado.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $team->players
+        ]);
+    }
+
 }
