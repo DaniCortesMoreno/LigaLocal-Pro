@@ -33,17 +33,10 @@ class TournamentController extends Controller
             ], 401);
         }
 
-        if ($tournament->user_id === $user->id) {
+        if ($tournament->user_id === $user->id || $tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
             return response()->json([
                 'success' => true,
-                'data' => $tournament
-            ]);
-        }
-
-        if ($tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
-            return response()->json([
-                'success' => true,
-                'data' => $tournament
+                'data' => $tournament->load('invitedUsers:id,nombre,apellidos,email', 'user:id,nombre,apellidos')
             ]);
         }
 
