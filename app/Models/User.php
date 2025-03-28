@@ -55,11 +55,17 @@ class User extends Authenticatable
         ];
     }
 
-        /**
+    /**
      * Relación: un usuario puede tener varios torneos creados
      */
     public function tournaments()
     {
         return $this->hasMany(Tournament::class);
     }
+
+    public function invitedTournaments()
+    {
+        return $this->belongsToMany(Tournament::class, 'tournament_user')->withPivot('role')->withTimestamps();
+    }
+
 }

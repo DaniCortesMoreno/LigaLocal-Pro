@@ -36,4 +36,9 @@ class Tournament extends Model
         return $this->hasMany(MatchGame::class);
     }
 
+    public function invitedUsers()
+    {
+        return $this->belongsToMany(User::class, 'tournament_user')->withPivot('role')->withTimestamps();
+    }
+
 }

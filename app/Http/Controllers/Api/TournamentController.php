@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\Auth;
 class TournamentController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         return Tournament::with('user')->get();
@@ -24,18 +26,36 @@ class TournamentController extends Controller
 
         $user = auth('sanctum')->user();
 
-        if (!$user || $user->id !== $tournament->user_id) {
+        if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'No tienes permisos para ver este torneo privado.'
-            ], 403);
+                'message' => 'No autenticado.'
+            ], 401);
         }
+
+        if ($tournament->user_id === $user->id) {
+            return response()->json([
+                'success' => true,
+                'data' => $tournament
+            ]);
+        }
+
+        if ($tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
+            return response()->json([
+                'success' => true,
+                'data' => $tournament
+            ]);
+        }
+
+        $this->authorize('view', $tournament);
 
         return response()->json([
             'success' => true,
             'data' => $tournament
         ]);
     }
+
+
 
 
     public function teams($id)

@@ -78,18 +78,41 @@ class TeamController extends Controller
 
     public function getByTournament(Tournament $tournament)
     {
-        // Si es privado y no tienes permiso para verlo, no puedes ver los equipos
-        if ($tournament->visibilidad === 'privado' && !$this->authorize('view', $tournament)) {
+        if ($tournament->visibilidad === 'publico') {
+            return response()->json([
+                'success' => true,
+                'data' => $tournament->teams
+            ]);
+        }
+    
+        $user = auth('sanctum')->user();
+    
+        if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'No tienes permiso para ver los equipos de este torneo privado.'
-            ], 403);
+                'message' => 'No autenticado.'
+            ], 401);
         }
-
-        $teams = $tournament->teams; // O usar relación si la tienes definida
+    
+        if ($tournament->user_id === $user->id) {
+            return response()->json([
+                'success' => true,
+                'data' => $tournament->teams
+            ]);
+        }
+    
+        if ($tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
+            return response()->json([
+                'success' => true,
+                'data' => $tournament->teams
+            ]);
+        }
+    
+        $this->authorize('view', $tournament);
+    
         return response()->json([
             'success' => true,
-            'data' => $teams
+            'data' => $tournament->teams
         ]);
     }
 

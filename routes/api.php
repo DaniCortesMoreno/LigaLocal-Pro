@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\MatchGameController;
+use App\Http\Controllers\Api\TournamentInvitationController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -20,6 +21,11 @@ Route::middleware('auth:sanctum')->post('/tournaments/{tournament}/teams', [Team
 Route::get('/teams/{team}/players', [PlayerController::class, 'getPlayersByTeam']);
 Route::get('/teams/{team}', [TeamController::class, 'show']);
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/tournaments/{tournament}/invite', [TournamentInvitationController::class, 'invite']);
+    Route::delete('/tournaments/{tournament}/invite/{user}', [TournamentInvitationController::class, 'removeInvite']);
+});
 
 // Rutas protegidas
 Route::middleware(['auth:sanctum'])->group(function () {

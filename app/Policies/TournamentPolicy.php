@@ -21,7 +21,13 @@ class TournamentPolicy
      */
     public function view(User $user, Tournament $tournament): bool
     {
-        return true;
+        if ($tournament->visibilidad === 'publico')
+            return true;
+        if (!$user)
+            return false;
+
+        return $tournament->user_id === $user->id
+            || $tournament->invitedUsers()->where('user_id', $user->id)->exists();
         //return $tournament->visibilidad === 'publico' || $user->id === $tournament->user_id || $user->rol === 'admin';
     }
 
@@ -38,7 +44,12 @@ class TournamentPolicy
      */
     public function update(User $user, Tournament $tournament): bool
     {
-        return $user->id === $tournament->user_id || $user->rol === 'admin';
+        return $user->id === $tournament->user_id 
+        || $tournament->invitedUsers()
+        ->where('user_id', $user->id)
+        ->where('tournament_user.role', 'editor')
+        ->exists() 
+        || $user->rol === 'admin';
     }
 
     /**
@@ -46,7 +57,12 @@ class TournamentPolicy
      */
     public function delete(User $user, Tournament $tournament): bool
     {
-        return $user->id === $tournament->user_id || $user->rol === 'admin';
+        return $user->id === $tournament->user_id 
+        || $tournament->invitedUsers()
+        ->where('user_id', $user->id)
+        ->where('tournament_user.role', 'editor')
+        ->exists()
+        || $user->rol === 'admin';
     }
 
     /**
@@ -54,7 +70,7 @@ class TournamentPolicy
      */
     public function restore(User $user, Tournament $tournament): bool
     {
-        return $user->rol === 'admin';
+        return $user->rol === 'admin' || $tournament->user_id === $user->id;
     }
 
     /**
