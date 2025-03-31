@@ -7,9 +7,12 @@ use App\Models\Team;
 use Illuminate\Http\Request;
 use App\Models\Player;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 class PlayerController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         $players = Player::with('team')->get(); // Asumiendo que hay relación con Team
@@ -37,13 +40,25 @@ class PlayerController extends Controller
         return response()->json(['message' => 'Jugador creado', 'player' => $player], 201);
     }
 
-    public function show($id)
+    /*public function show($id)
     {
         $player = Player::with('team')->find($id);
         if (!$player) {
             return response()->json(['message' => 'Jugador no encontrado'], 404);
         }
         return response()->json($player);
+    }*/
+
+    public function show(Player $player)
+    {
+        $this->authorize('view', $player);
+
+        $player->load('team.tournament');
+
+        return response()->json([
+            'success' => true,
+            'data' => $player
+        ]);
     }
 
     public function update(Request $request, $id)

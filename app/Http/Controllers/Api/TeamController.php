@@ -119,7 +119,7 @@ class TeamController extends Controller
 
     public function storeForTournament(Request $request, Tournament $tournament)
     {
-        $this->authorize('createTeamForTournament', $tournament);
+        $this->authorize('create', [Team::class, $tournament]);
 
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',

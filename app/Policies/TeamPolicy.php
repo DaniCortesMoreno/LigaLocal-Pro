@@ -30,7 +30,25 @@ class TeamPolicy
      */
     public function create(User $user, Tournament $tournament): bool
     {
-        return $tournament->user_id === $user->id || $user->role === 'admin';
+        // Es el creador del torneo
+        if ($user->id === $tournament->user_id || $user->role === 'admin') {
+            return true;
+        }
+
+        // Es un invitado con rol 'editor'
+        return $tournament->invitedUsers()
+            ->where('user_id', $user->id)
+            ->wherePivot('role', 'editor')
+            ->exists();
+
+        /*
+        return $tournament->invited_users
+->where('id', $user->id)
+->where('pivot.role', 'editor')
+->isNotEmpty();
+
+        */
+
     }
 
     public function createForTournament(User $user, Tournament $tournament)

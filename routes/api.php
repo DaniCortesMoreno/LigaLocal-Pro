@@ -20,6 +20,7 @@ Route::get('users/{user}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->post('/tournaments/{tournament}/teams', [TeamController::class, 'storeForTournament']);
 Route::get('/teams/{team}/players', [PlayerController::class, 'getPlayersByTeam']);
 Route::get('/teams/{team}', [TeamController::class, 'show']);
+Route::get('/players/{player}', [PlayerController::class, 'show']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
