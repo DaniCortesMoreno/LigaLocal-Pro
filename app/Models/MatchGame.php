@@ -14,9 +14,9 @@ class MatchGame extends Model
         'equipo1_id',
         'equipo2_id',
         'fecha_partido',
-        'resultado',
+        'goles_equipo1',
+        'goles_equipo2',
         'estado_partido',
-        'marcador_parcial',
         'arbitro',
     ];
 

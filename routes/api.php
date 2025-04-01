@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->post('/tournaments/{tournament}/teams', [Team
 Route::get('/teams/{team}/players', [PlayerController::class, 'getPlayersByTeam']);
 Route::get('/teams/{team}', [TeamController::class, 'show']);
 Route::get('/players/{player}', [PlayerController::class, 'show']);
+Route::get('/tournaments/{tournament}/match_games', [MatchGameController::class, 'getByTournament']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -39,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // CRUDs
     Route::get('/tournaments/private', [TournamentController::class, 'privateTournaments']);
     Route::get('/tournaments/user/{id}', [TournamentController::class, 'tournamentsByUser']);
+    
     Route::apiResource('tournaments', TournamentController::class)->except(['show']);
     Route::apiResource('teams', TeamController::class)->except(['show']);
     Route::apiResource('players', PlayerController::class);

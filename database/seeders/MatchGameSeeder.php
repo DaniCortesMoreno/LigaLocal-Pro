@@ -21,9 +21,9 @@ class MatchGameSeeder extends Seeder
                 'equipo1_id' => $teams[0]->id,
                 'equipo2_id' => $teams[1]->id,
                 'fecha_partido' => Carbon::now()->addDays(3),
-                'resultado' => null,
+                'goles_equipo1' => null,
+                'goles_equipo2' => null,
                 'estado_partido' => 'pendiente',
-                'marcador_parcial' => null,
                 'arbitro' => 'Carlos Ruiz',
             ]);
 
@@ -32,9 +32,9 @@ class MatchGameSeeder extends Seeder
                 'equipo1_id' => $teams[1]->id,
                 'equipo2_id' => $teams[0]->id,
                 'fecha_partido' => Carbon::now()->addDays(10),
-                'resultado' => '1-1',
+                'goles_equipo1' => null,
+                'goles_equipo2' => null,
                 'estado_partido' => 'jugado',
-                'marcador_parcial' => '1-0 al descanso',
                 'arbitro' => 'Laura Gómez',
             ]);
         } else {

@@ -33,8 +33,9 @@ class Tournament extends Model
 
     public function matches()
     {
-        return $this->hasMany(MatchGame::class);
+        return $this->hasMany(MatchGame::class, 'torneo_id');
     }
+
 
     public function invitedUsers()
     {
