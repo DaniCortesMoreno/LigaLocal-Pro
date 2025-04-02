@@ -10,11 +10,26 @@ class Player extends Model
     use HasFactory;
 
     protected $fillable = [
-    'team_id', 'nombre', 'apellidos', 'edad', 'dorsal', 'posición', 'estado', 'foto'
+        'team_id',
+        'nombre',
+        'apellidos',
+        'edad',
+        'dorsal',
+        'posición',
+        'estado',
+        'foto'
     ];
 
     public function team()
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function matchGames()
+    {
+        return $this->belongsToMany(MatchGame::class, 'player_match_game')
+            ->withPivot(['goles', 'asistencias', 'amarillas', 'rojas'])
+            ->withTimestamps();
+    }
+
 }

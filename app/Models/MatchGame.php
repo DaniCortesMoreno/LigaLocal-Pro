@@ -37,4 +37,12 @@ class MatchGame extends Model
     }
 
 
+    public function players()
+    {
+        return $this->belongsToMany(Player::class, 'player_match_game')
+            ->withPivot(['goles', 'asistencias', 'amarillas', 'rojas'])
+            ->withTimestamps();
+    }
+
+
 }

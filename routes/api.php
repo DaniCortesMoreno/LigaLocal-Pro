@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\MatchGameController;
+use App\Http\Controllers\Api\PlayerMatchGameController;
 use App\Http\Controllers\Api\TournamentInvitationController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -40,19 +41,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // CRUDs
     Route::get('/tournaments/private', [TournamentController::class, 'privateTournaments']);
     Route::get('/tournaments/user/{id}', [TournamentController::class, 'tournamentsByUser']);
-    
+
     Route::apiResource('tournaments', TournamentController::class)->except(['show']);
     Route::apiResource('teams', TeamController::class)->except(['show']);
     Route::apiResource('players', PlayerController::class);
     Route::apiResource('match_games', MatchGameController::class);
     Route::apiResource('users', UserController::class)->except(['store', 'show']);
 
+
+
+    Route::post('/match_games/{match}/stats', [PlayerMatchGameController::class, 'store']);
+    Route::get('/match_games/{match}/stats', [PlayerMatchGameController::class, 'show']);
+
+
+
     // Aquí podrías aplicar roles cuando tengas el middleware
     // Route::middleware('role:admin')->group(...);
     Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         Route::get('/admin-area', fn() => 'Bienvenido, Admin');
     });
-    
+
     /*Route::middleware(['auth:sanctum', 'role:admin,gestor'])->group(function () {
         Route::apiResource('tournaments', TournamentController::class);
     });*/
