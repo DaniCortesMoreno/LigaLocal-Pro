@@ -51,7 +51,14 @@ class PlayerController extends Controller
 
     public function show(Player $player)
     {
-        $this->authorize('view', $player);
+        $user = auth('sanctum')->user();
+
+        if (!app(\App\Policies\PlayerPolicy::class)->view($user, $player)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permisos para ver este jugador.'
+            ], 403);
+        }
 
         $player->load('team.tournament');
 

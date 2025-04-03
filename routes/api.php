@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('tournaments', TournamentController::class)->except(['show']);
     Route::apiResource('teams', TeamController::class)->except(['show']);
-    Route::apiResource('players', PlayerController::class);
+    Route::apiResource('players', PlayerController::class)->except(['show']);
     Route::apiResource('match_games', MatchGameController::class);
     Route::apiResource('users', UserController::class)->except(['store', 'show']);
 

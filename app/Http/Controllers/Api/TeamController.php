@@ -35,14 +35,17 @@ class TeamController extends Controller
         return response()->json(['success' => true, 'data' => $team, 'message' => 'Equipo creado correctamente.']);
     }
 
-    public function show($id)
+    public function show(Team $team)
     {
-        $team = Team::find($id);
-        if (!$team) {
-            return response()->json(['success' => false, 'message' => 'Equipo no encontrado.'], 404);
+        if (!app(\App\Policies\TeamPolicy::class)->view(auth('sanctum')->user(), $team)) {
+            return response()->json(['success' => false, 'message' => 'No tienes permisos para ver este equipo'], 403);
         }
+        $team->load('tournament');
 
-        return response()->json(['success' => true, 'data' => $team]);
+        return response()->json([
+            'success' => true,
+            'data' => $team
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -84,32 +87,32 @@ class TeamController extends Controller
                 'data' => $tournament->teams
             ]);
         }
-    
+
         $user = auth('sanctum')->user();
-    
+
         if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'No autenticado.'
             ], 401);
         }
-    
+
         if ($tournament->user_id === $user->id) {
             return response()->json([
                 'success' => true,
                 'data' => $tournament->teams
             ]);
         }
-    
+
         if ($tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
             return response()->json([
                 'success' => true,
                 'data' => $tournament->teams
             ]);
         }
-    
+
         $this->authorize('view', $tournament);
-    
+
         return response()->json([
             'success' => true,
             'data' => $tournament->teams
