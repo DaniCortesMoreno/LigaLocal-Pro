@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Player;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -27,17 +28,17 @@ class PlayerPolicy
         if ($tournament->visibilidad === 'publico') {
             return true;
         }
-    
+
         // Si no está autenticado y el torneo es privado, no puede ver
         if (!$user) {
             return false;
         }
-    
+
         // Si es el creador del torneo, puede ver
         if ($user->id === $tournament->user_id) {
             return true;
         }
-    
+
         // Si es un usuario invitado al torneo (viewer o editor), también puede ver
         return $tournament->invitedUsers()->where('user_id', $user->id)->exists();
     }
@@ -45,9 +46,15 @@ class PlayerPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Team $team): bool
     {
-        return false;
+        $tournament = $team->tournament;
+
+        return $user->id === $tournament->user_id ||
+            $tournament->invitedUsers()
+                ->where('user_id', $user->id)
+                ->wherePivot('role', 'editor')
+                ->exists();
     }
 
     /**

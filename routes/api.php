@@ -15,7 +15,6 @@ use App\Http\Controllers\Api\PlayerController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/tournaments/public', [TournamentController::class, 'publicTournaments']);
-Route::get('tournaments/{tournament}', [TournamentController::class, 'show']);
 Route::get('/tournaments/{tournament}/teams', [TeamController::class, 'getByTournament']);
 Route::get('users/{user}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->post('/tournaments/{tournament}/teams', [TeamController::class, 'storeForTournament']);
@@ -48,11 +47,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('match_games', MatchGameController::class);
     Route::apiResource('users', UserController::class)->except(['store', 'show']);
 
+    Route::get('/tournaments/{tournament}/invited-users', [TournamentController::class, 'invitedUsers']);
 
+    Route::post('/teams/{team}/players', [PlayerController::class, 'storeForTeam']);
 
     Route::post('/match_games/{match}/stats', [PlayerMatchGameController::class, 'store']);
     Route::get('/match_games/{match}/stats', [PlayerMatchGameController::class, 'show']);
 
+    Route::get('/tournaments/invited', [TournamentController::class, 'invitedTournaments']);
 
 
     // Aquí podrías aplicar roles cuando tengas el middleware
@@ -65,3 +67,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('tournaments', TournamentController::class);
     });*/
 });
+
+Route::get('tournaments/{tournament}', [TournamentController::class, 'show']);

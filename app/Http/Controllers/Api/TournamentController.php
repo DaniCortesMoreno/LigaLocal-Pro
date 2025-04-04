@@ -17,6 +17,8 @@ class TournamentController extends Controller
 
     public function show(Tournament $tournament)
     {
+        $tournament->load('invitedUsers:id,nombre,apellidos,email', 'user:id,nombre,apellidos');
+
         if ($tournament->visibilidad === 'publico') {
             return response()->json([
                 'success' => true,
@@ -33,10 +35,13 @@ class TournamentController extends Controller
             ], 401);
         }
 
-        if ($tournament->user_id === $user->id || $tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
+        if (
+            $tournament->user_id === $user->id ||
+            $tournament->invitedUsers()->where('user_id', $user->id)->exists()
+        ) {
             return response()->json([
                 'success' => true,
-                'data' => $tournament->load('invitedUsers:id,nombre,apellidos,email', 'user:id,nombre,apellidos')
+                'data' => $tournament
             ]);
         }
 
@@ -47,6 +52,7 @@ class TournamentController extends Controller
             'data' => $tournament
         ]);
     }
+
 
 
 
@@ -64,9 +70,9 @@ class TournamentController extends Controller
             'nombre' => 'required|string',
             'tipo' => 'required|in:sala,futbol7,futbol11',
             'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'date|after_or_equal:fecha_inicio',
-            'cantidad_equipos' => 'integer|min:2',
-            'cantidad_jugadores' => 'integer|min:1',
+            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+            'cantidad_equipos' => 'nullable|integer|min:2',
+            'cantidad_jugadores' => 'nullable|integer|min:1',
             'estado' => 'in:pendiente,en_curso,finalizado',
             'formato' => 'required|in:liguilla,eliminacion,grupos_playoffs',
             'reglamento' => 'nullable|string',
@@ -143,6 +149,46 @@ class TournamentController extends Controller
             'data' => $tournaments
         ]);
     }
+
+    public function invitedTournaments(Request $request)
+    {
+        $user = $request->user();
+
+        $tournaments = $user->invitedTournaments()
+            ->with(['user', 'teams', 'matches']) // Creador, equipos y partidos
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $tournaments
+        ]);
+    }
+
+    public function invitedUsers(Tournament $tournament)
+    {
+        $user = auth('sanctum')->user();
+
+        // Verificar que es el creador o un invitado
+        if (
+            !$user ||
+            ($user->id !== $tournament->user_id &&
+                !$tournament->invitedUsers()->where('user_id', $user->id)->exists())
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No tienes permisos para ver los invitados de este torneo.'
+            ], 403);
+        }
+
+        $invitados = $tournament->invitedUsers()->select('users.id', 'users.nombre', 'users.apellidos', 'users.email', 'tournament_user.role')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $invitados
+        ]);
+    }
+
+
 
 
 }

@@ -122,4 +122,29 @@ class PlayerController extends Controller
         ]);
     }
 
+    public function storeForTeam(Request $request, Team $team)
+    {
+        $tournament = $team->tournament;
+
+        $this->authorize('create', [Player::class, $team]); // autorizamos por team
+
+        $validated = $request->validate([
+            'nombre' => 'sometimes|required|string|max:100',
+            'apellidos' => 'sometimes|required|string|max:100',
+            'edad' => 'sometimes|required|integer|min:0',
+            'dorsal' => 'sometimes|required|integer|min:0',
+            'posición' => 'sometimes|required|string',
+            'estado' => 'sometimes|required|in:activo,lesionado,suspendido',
+            'foto' => 'nullable|url',
+        ]);
+
+        $player = $team->players()->create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $player
+        ], 201);
+    }
+
+
 }
