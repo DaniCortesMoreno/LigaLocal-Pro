@@ -188,6 +188,77 @@ class TournamentController extends Controller
         ]);
     }
 
+    public function clasificacion(Tournament $tournament)
+    {
+        $matchGames = $tournament->matches()->where('estado_partido', 'finalizado')->get();
+
+        // Cargamos todos los equipos del torneo
+        $teams = $tournament->teams()->pluck('nombre', 'id'); // id => nombre
+
+        $stats = [];
+
+        foreach ($matchGames as $match) {
+            foreach (['equipo1_id', 'equipo2_id'] as $teamKey) {
+                $teamId = $match->$teamKey;
+                if (!isset($stats[$teamId])) {
+                    $stats[$teamId] = [
+                        'equipo_id' => $teamId,
+                        'nombre_equipo' => $teams[$teamId] ?? 'Equipo desconocido', // 👈 Aquí añadimos el nombre
+                        'jugados' => 0,
+                        'ganados' => 0,
+                        'empatados' => 0,
+                        'perdidos' => 0,
+                        'goles_favor' => 0,
+                        'goles_contra' => 0,
+                        'puntos' => 0,
+                    ];
+                }
+            }
+
+            $stats[$match->equipo1_id]['jugados']++;
+            $stats[$match->equipo2_id]['jugados']++;
+
+            $stats[$match->equipo1_id]['goles_favor'] += $match->goles_equipo1;
+            $stats[$match->equipo1_id]['goles_contra'] += $match->goles_equipo2;
+
+            $stats[$match->equipo2_id]['goles_favor'] += $match->goles_equipo2;
+            $stats[$match->equipo2_id]['goles_contra'] += $match->goles_equipo1;
+
+            if ($match->goles_equipo1 > $match->goles_equipo2) {
+                $stats[$match->equipo1_id]['ganados']++;
+                $stats[$match->equipo2_id]['perdidos']++;
+                $stats[$match->equipo1_id]['puntos'] += 3;
+            } elseif ($match->goles_equipo1 < $match->goles_equipo2) {
+                $stats[$match->equipo2_id]['ganados']++;
+                $stats[$match->equipo1_id]['perdidos']++;
+                $stats[$match->equipo2_id]['puntos'] += 3;
+            } else {
+                $stats[$match->equipo1_id]['empatados']++;
+                $stats[$match->equipo2_id]['empatados']++;
+                $stats[$match->equipo1_id]['puntos'] += 1;
+                $stats[$match->equipo2_id]['puntos'] += 1;
+            }
+        }
+
+        // Añadir diferencia de goles
+        foreach ($stats as &$equipo) {
+            $equipo['diferencia_goles'] = $equipo['goles_favor'] - $equipo['goles_contra'];
+        }
+
+        // Ordenar por puntos y luego por diferencia de goles
+        usort($stats, function ($a, $b) {
+            return $b['puntos'] <=> $a['puntos']
+                ?: $b['diferencia_goles'] <=> $a['diferencia_goles'];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => array_values($stats),
+        ]);
+    }
+
+
+
 
 
 

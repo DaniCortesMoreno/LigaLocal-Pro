@@ -24,6 +24,9 @@ Route::get('/players/{player}', [PlayerController::class, 'show']);
 Route::get('/tournaments/{tournament}/match_games', [MatchGameController::class, 'getByTournament']);
 
 
+Route::get('/tournaments/{tournament}/clasificacion', [TournamentController::class, 'clasificacion']);
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tournaments/{tournament}/invite', [TournamentInvitationController::class, 'invite']);
     Route::delete('/tournaments/{tournament}/invite/{user}', [TournamentInvitationController::class, 'removeInvite']);
