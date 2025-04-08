@@ -40,13 +40,16 @@ class TeamController extends Controller
         if (!app(\App\Policies\TeamPolicy::class)->view(auth('sanctum')->user(), $team)) {
             return response()->json(['success' => false, 'message' => 'No tienes permisos para ver este equipo'], 403);
         }
-        $team->load('tournament');
+
+        // Carga también los invitados del torneo relacionado
+        $team->load('tournament.invitedUsers');
 
         return response()->json([
             'success' => true,
             'data' => $team
         ]);
     }
+
 
     public function update(Request $request, $id)
     {

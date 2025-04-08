@@ -258,6 +258,47 @@ class TournamentController extends Controller
     }
 
 
+    public function rankingEstadisticas(Tournament $tournament)
+    {
+        // Jugadores de partidos finalizados en este torneo
+        $matchIds = $tournament->matches()->where('estado_partido', 'finalizado')->pluck('id');
+
+        // Agrupar estadísticas por jugador
+        $stats = \DB::table('player_match_game')
+            ->select(
+                'player_id',
+                \DB::raw('SUM(goles) as total_goles'),
+                \DB::raw('SUM(asistencias) as total_asistencias'),
+                \DB::raw('SUM(amarillas) as total_amarillas'),
+                \DB::raw('SUM(rojas) as total_rojas')
+            )
+            ->whereIn('match_game_id', $matchIds)
+            ->groupBy('player_id')
+            ->orderByDesc('total_goles') // puedes cambiar el orden según el ranking
+            ->get();
+
+        // Cargar datos de los jugadores
+        $players = \App\Models\Player::whereIn('id', $stats->pluck('player_id'))->get()->keyBy('id');
+
+        // Mezclamos para tener los nombres en la respuesta
+        $ranking = $stats->map(function ($stat) use ($players) {
+            $player = $players[$stat->player_id] ?? null;
+            return [
+                'player_id' => $stat->player_id,
+                'nombre' => $player?->nombre . ' ' . $player?->apellidos,
+                'equipo' => $player?->team?->nombre,
+                'goles' => $stat->total_goles,
+                'asistencias' => $stat->total_asistencias,
+                'amarillas' => $stat->total_amarillas,
+                'rojas' => $stat->total_rojas,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $ranking
+        ]);
+    }
 
 
 

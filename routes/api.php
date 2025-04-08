@@ -25,6 +25,7 @@ Route::get('/tournaments/{tournament}/match_games', [MatchGameController::class,
 
 
 Route::get('/tournaments/{tournament}/clasificacion', [TournamentController::class, 'clasificacion']);
+Route::get('/tournaments/{tournament}/ranking', [TournamentController::class, 'rankingEstadisticas']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
