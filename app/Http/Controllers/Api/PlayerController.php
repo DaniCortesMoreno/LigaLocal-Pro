@@ -60,11 +60,14 @@ class PlayerController extends Controller
             ], 403);
         }
 
-        $player->load('team.tournament');
+        $player->load('team.tournament', 'mvps');
 
         return response()->json([
             'success' => true,
-            'data' => $player
+            'data' => array_merge(
+                $player->toArray(),
+                ['team' => $player->team, 'mvps' => $player->mvps, 'mvp_count' => $player->mvps()->count()]
+            )
         ]);
     }
 

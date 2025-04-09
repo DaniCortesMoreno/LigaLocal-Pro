@@ -44,5 +44,10 @@ class MatchGame extends Model
             ->withTimestamps();
     }
 
+    public function mvp()
+    {
+        return $this->belongsTo(Player::class, 'mvp_id');
+    }
+
 
 }

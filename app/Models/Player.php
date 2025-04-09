@@ -32,4 +32,9 @@ class Player extends Model
             ->withTimestamps();
     }
 
+    public function mvps()
+    {
+        return $this->hasMany(MatchGame::class, 'mvp_id');
+    }
+
 }

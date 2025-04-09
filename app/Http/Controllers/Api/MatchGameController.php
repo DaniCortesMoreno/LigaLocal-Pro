@@ -43,6 +43,7 @@ class MatchGameController extends Controller
     public function show($id)
     {
         $match = MatchGame::with(['equipo1', 'equipo2', 'torneo'])->find($id);
+        $match->load('mvp');
 
         if (!$match) {
             return response()->json(['success' => false, 'message' => 'Partido no encontrado'], 404);
@@ -74,6 +75,8 @@ class MatchGameController extends Controller
         ]);
 
         $match->update($validated);
+        $match->mvp_id = $request->input('mvp_id');
+        $match->save();
 
         return response()->json(['success' => true, 'data' => $match]);
     }
@@ -111,7 +114,8 @@ class MatchGameController extends Controller
         }
     }
 
-    $matches = $tournament->matches()->with(['equipo1', 'equipo2'])->get();
+    //$matches = $tournament->matches()->with(['equipo1', 'equipo2'])->get();
+    $matches = $tournament->matches()->with(['equipo1', 'equipo2', 'mvp'])->get();
 
     return response()->json([
         'success' => true,
