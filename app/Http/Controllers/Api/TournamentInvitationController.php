@@ -50,5 +50,32 @@ class TournamentInvitationController extends Controller
             'message' => 'Invitación eliminada correctamente.'
         ]);
     }
+
+    public function leave(Tournament $tournament)
+    {
+        $user = auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'No autenticado'], 401);
+        }
+
+        $tournament->invitedUsers()->detach($user->id);
+
+        return response()->json(['success' => true, 'message' => 'Has salido del torneo']);
+    }
+
+    public function removeUser(Tournament $tournament, User $user)
+    {
+        $authUser = auth('sanctum')->user();
+
+        if ($authUser->id !== $tournament->user_id) {
+            return response()->json(['success' => false, 'message' => 'No autorizado'], 403);
+        }
+
+        $tournament->invitedUsers()->detach($user->id);
+
+        return response()->json(['success' => true, 'message' => 'Usuario eliminado del torneo']);
+    }
+
 }
 

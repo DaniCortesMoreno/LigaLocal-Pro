@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\MatchGame;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tournament;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Team;
 class TournamentController extends Controller
 {
     use AuthorizesRequests;
@@ -300,6 +303,56 @@ class TournamentController extends Controller
         ]);
     }
 
+    public function generarPartidos(Request $request, $id)
+    {
+        $torneo = Tournament::with('teams')->findOrFail($id);
+        $equipos = $torneo->teams;
+
+        if ($equipos->count() < 2) {
+            return response()->json(['error' => 'Se necesitan al menos 2 equipos.'], 400);
+        }
+
+        if ($torneo->formato === 'liguilla') {
+            // Round Robin
+            for ($i = 0; $i < count($equipos); $i++) {
+                for ($j = $i + 1; $j < count($equipos); $j++) {
+                    MatchGame::create([
+                        'torneo_id' => $torneo->id,
+                        'equipo1_id' => $equipos[$i]->id,
+                        'equipo2_id' => $equipos[$j]->id,
+                        'estado_partido' => 'pendiente'
+                    ]);
+                }
+            }
+        } elseif ($torneo->formato === 'eliminacion') {
+            // Elimination Bracket
+            $equiposMezclados = $equipos->shuffle()->values();
+
+            $total = $equiposMezclados->count();
+            $potencia = pow(2, ceil(log($total, 2))); // siguiente potencia de 2
+            $byes = $potencia - $total;
+
+            // Añadimos 'byes' como partidos sin oponente
+            $ronda1 = [];
+            $index = 0;
+
+            for ($i = 0; $i < $potencia / 2; $i++) {
+                $equipo1 = $equiposMezclados[$index++] ?? null;
+                $equipo2 = $equiposMezclados[$index++] ?? null;
+
+                $match = MatchGame::create([
+                    'torneo_id' => $torneo->id,
+                    'equipo1_id' => $equipo1?->id,
+                    'equipo2_id' => $equipo2?->id,
+                    'estado_partido' => 'pendiente'
+                ]);
+
+                $ronda1[] = $match;
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Partidos generados']);
+    }
 
 
 
