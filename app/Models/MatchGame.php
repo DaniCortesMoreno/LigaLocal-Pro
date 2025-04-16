@@ -18,6 +18,7 @@ class MatchGame extends Model
         'goles_equipo2',
         'estado_partido',
         'arbitro',
+        'ronda'
     ];
 
 
