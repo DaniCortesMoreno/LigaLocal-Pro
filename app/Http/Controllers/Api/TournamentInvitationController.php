@@ -77,5 +77,46 @@ class TournamentInvitationController extends Controller
         return response()->json(['success' => true, 'message' => 'Usuario eliminado del torneo']);
     }
 
+    public function abandonarTorneo(Request $request, Tournament $tournament)
+    {
+        $user = auth('sanctum')->user();
+
+        if (!$tournament->invitedUsers()->where('user_id', $user->id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'No estás invitado a este torneo'], 403);
+        }
+
+        // Eliminar al usuario de los invitados
+        $tournament->invitedUsers()->detach($user->id);
+
+        return response()->json(['success' => true, 'message' => 'Has abandonado el torneo']);
+    }
+
+    public function expulsarInvitado(Request $request, Tournament $tournament, $userId)
+    {
+        $authUser = auth('sanctum')->user();
+
+        // Comprobar si es owner o editor
+        $esOwner = $tournament->user_id === $authUser->id;
+        $esEditor = $tournament->invitedUsers()
+            ->where('user_id', $authUser->id)
+            ->wherePivot('role', 'editor')
+            ->exists();
+
+        if (!$esOwner && !$esEditor) {
+            return response()->json(['success' => false, 'message' => 'No tienes permisos'], 403);
+        }
+
+        // Evitar que se expulse al owner
+        if ($tournament->user_id == $userId) {
+            return response()->json(['success' => false, 'message' => 'No puedes expulsar al creador del torneo'], 403);
+        }
+
+        $tournament->invitedUsers()->detach($userId);
+
+        return response()->json(['success' => true, 'message' => 'Usuario expulsado']);
+    }
+
+
+
 }
 

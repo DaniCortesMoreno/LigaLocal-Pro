@@ -65,6 +65,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/tournaments/{id}/generar-partidos', [TournamentController::class, 'generarPartidos']);
 
+    Route::delete('/tournaments/{tournament}/abandonar', [TournamentController::class, 'abandonarTorneo']);
+    Route::delete('/tournaments/{tournament}/expulsar/{user}', [TournamentController::class, 'expulsarInvitado']);
+
 
     // Aquí podrías aplicar roles cuando tengas el middleware
     // Route::middleware('role:admin')->group(...);
