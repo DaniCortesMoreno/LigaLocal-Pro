@@ -10,7 +10,7 @@ return new class extends Migration {
     Schema::create('teams', function (Blueprint $table) {
         $table->id();
         $table->string('nombre');
-        $table->string('logo')->nullable();
+        $table->longText('logo')->nullable();
         $table->string('color_equipacion')->nullable();
         $table->string('entrenador')->nullable();
         $table->unsignedBigInteger('tournament_id');

@@ -22,13 +22,19 @@ class TeamController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'tournament_id' => 'required|exists:tournaments,id',
-            'logo' => 'nullable|string',
+            'logo' => 'nullable|string|max:65535', // Aquí aceptamos imagen
             'color_equipacion' => 'nullable|string',
             'entrenador' => 'nullable|string',
         ]);
 
         $tournament = Tournament::findOrFail($request->tournament_id);
         $this->authorize('create', [Team::class, $tournament]);
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $path = $file->store('logos', 'public');
+            $validated['logo'] = $path;
+        }
 
         $team = Team::create($validated);
 
@@ -61,10 +67,16 @@ class TeamController extends Controller
         $validated = $request->validate([
             'nombre' => 'sometimes|required|string|max:255',
             'tournament_id' => 'sometimes|required|exists:tournaments,id',
-            'logo' => 'nullable|string',
+            'logo' => 'nullable|string|max:65535',
             'color_equipacion' => 'nullable|string',
             'entrenador' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $path = $file->store('logos', 'public');
+            $validated['logo'] = $path;
+        }
 
         $team->update($validated);
 
