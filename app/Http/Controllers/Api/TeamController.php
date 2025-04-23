@@ -143,13 +143,30 @@ class TeamController extends Controller
             'nombre' => 'required|string|max:255',
             'color_equipacion' => 'nullable|string|max:255',
             'entrenador' => 'nullable|string|max:255',
+            'logo' => 'nullable|string|max:65535',
+
         ]);
+
+        /*$validated = $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'tournament_id' => 'sometimes|required|exists:tournaments,id',
+            'color_equipacion' => 'nullable|string',
+            'logo' => 'nullable|string|max:65535',
+            'entrenador' => 'nullable|string',
+        ]);*/
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $path = $file->store('logos', 'public');
+            $validated['logo'] = $path;
+        }
 
         $team = Team::create([
             'nombre' => $validated['nombre'],
             'color_equipacion' => $validated['color_equipacion'] ?? null,
             'entrenador' => $validated['entrenador'] ?? null,
             'tournament_id' => $tournament->id,
+            'logo' => $validated['logo'] ?? null
         ]);
 
         return response()->json([

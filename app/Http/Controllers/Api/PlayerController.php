@@ -29,11 +29,17 @@ class PlayerController extends Controller
             'dorsal' => 'required|integer|min:0',
             'posición' => 'required|string',
             'estado' => 'required|in:activo,lesionado,suspendido',
-            'foto' => 'nullable|url',
+            'foto' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $path = $file->store('fotos', 'public');
+            $request['foto'] = $path;
         }
 
         $player = Player::create($request->all());
@@ -86,11 +92,17 @@ class PlayerController extends Controller
             'dorsal' => 'sometimes|required|integer|min:0',
             'posición' => 'sometimes|required|string',
             'estado' => 'sometimes|required|in:activo,lesionado,suspendido',
-            'foto' => 'nullable|url',
+            'foto' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $path = $file->store('fotos', 'public');
+            $request['foto'] = $path;
         }
 
         $player->update($request->all());
@@ -138,8 +150,14 @@ class PlayerController extends Controller
             'dorsal' => 'sometimes|required|integer|min:0',
             'posición' => 'sometimes|required|string',
             'estado' => 'sometimes|required|in:activo,lesionado,suspendido',
-            'foto' => 'nullable|url',
+            'foto' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $path = $file->store('fotos', 'public');
+            $validated['foto'] = $path;
+        }
 
         $player = $team->players()->create($validated);
 

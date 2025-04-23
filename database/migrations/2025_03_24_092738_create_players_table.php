@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->integer('amarillas')->default(0)->nullable();
             $table->integer('rojas')->default(0)->nullable();
             $table->integer('cantidad_partidos')->default(0)->nullable();
-            $table->string('foto')->nullable();
+            $table->longText('foto')->nullable();
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->timestamps();
         });
