@@ -318,6 +318,7 @@ class TournamentController extends Controller
             return [
                 'player_id' => $stat->player_id,
                 'nombre' => $player?->nombre . ' ' . $player?->apellidos,
+                'foto' => $player?->foto,
                 'equipo' => $player?->team?->nombre,
                 'goles' => $stat->total_goles,
                 'asistencias' => $stat->total_asistencias,
@@ -396,7 +397,91 @@ class TournamentController extends Controller
         return response()->json(['success' => true, 'message' => 'Partidos generados con estructura de rondas']);
     }
 
+    /* ALEATORIO
+    public function generarPartidos(Request $request, $id)
+    {
+        $torneo = Tournament::with('teams')->findOrFail($id);
+        $equipos = $torneo->teams;
 
+        if ($equipos->count() < 2) {
+            return response()->json(['error' => 'Se necesitan al menos 2 equipos.'], 400);
+        }
+
+        if ($torneo->formato === 'liguilla') {
+            $modoIdaVuelta = $request->input('ida_vuelta', false); // true o false
+            $enfrentamientos = [];
+
+            for ($i = 0; $i < count($equipos); $i++) {
+                for ($j = $i + 1; $j < count($equipos); $j++) {
+                    $enfrentamientos[] = [
+                        'equipo1_id' => $equipos[$i]->id,
+                        'equipo2_id' => $equipos[$j]->id,
+                    ];
+
+                    if ($modoIdaVuelta) {
+                        $enfrentamientos[] = [
+                            'equipo1_id' => $equipos[$j]->id,
+                            'equipo2_id' => $equipos[$i]->id,
+                        ];
+                    }
+                }
+            }
+
+            // Mezclamos los enfrentamientos
+            shuffle($enfrentamientos);
+
+            foreach ($enfrentamientos as $partido) {
+                MatchGame::create([
+                    'torneo_id' => $torneo->id,
+                    'equipo1_id' => $partido['equipo1_id'],
+                    'equipo2_id' => $partido['equipo2_id'],
+                    'estado_partido' => 'pendiente',
+                    'ronda' => 1
+                ]);
+            }
+        } elseif ($torneo->formato === 'eliminacion') {
+            $equiposMezclados = $equipos->shuffle()->values();
+            $total = $equiposMezclados->count();
+            $potencia = pow(2, ceil(log($total, 2)));
+            $byes = $potencia - $total;
+
+            $rondas = log($potencia, 2); // Total de rondas (1/8, 1/4, semi, final...)
+
+            $partidosPorRonda = [];
+
+            // Primera ronda
+            $index = 0;
+            for ($i = 0; $i < $potencia / 2; $i++) {
+                $equipo1 = $equiposMezclados[$index++] ?? null;
+                $equipo2 = $equiposMezclados[$index++] ?? null;
+
+                $match = MatchGame::create([
+                    'torneo_id' => $torneo->id,
+                    'equipo1_id' => $equipo1?->id,
+                    'equipo2_id' => $equipo2?->id,
+                    'estado_partido' => 'pendiente',
+                    'ronda' => 1
+                ]);
+
+                $partidosPorRonda[1][] = $match;
+            }
+
+            // Rondas futuras
+            for ($ronda = 2; $ronda <= $rondas; $ronda++) {
+                $numPartidos = $potencia / pow(2, $ronda);
+                for ($i = 0; $i < $numPartidos; $i++) {
+                    MatchGame::create([
+                        'torneo_id' => $torneo->id,
+                        'estado_partido' => 'pendiente',
+                        'ronda' => $ronda
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Partidos generados con estructura de rondas']);
+    }
+    */
 
 
 
