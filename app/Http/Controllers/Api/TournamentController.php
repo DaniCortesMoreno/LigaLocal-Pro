@@ -226,6 +226,7 @@ class TournamentController extends Controller
 
         // Cargamos todos los equipos del torneo
         $teams = $tournament->teams()->pluck('nombre', 'id'); // id => nombre
+        $logos = $tournament->teams()->pluck('logo', 'id'); // id => logo
 
         $stats = [];
 
@@ -235,7 +236,8 @@ class TournamentController extends Controller
                 if (!isset($stats[$teamId])) {
                     $stats[$teamId] = [
                         'equipo_id' => $teamId,
-                        'nombre_equipo' => $teams[$teamId] ?? 'Equipo desconocido', // 👈 Aquí añadimos el nombre
+                        'nombre_equipo' => $teams[$teamId] ?? 'Equipo desconocido', 
+                        'logo' => $logos[$teamId] ?? null, // Añadir el logo
                         'jugados' => 0,
                         'ganados' => 0,
                         'empatados' => 0,
