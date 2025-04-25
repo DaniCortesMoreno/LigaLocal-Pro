@@ -43,11 +43,27 @@ class MatchGameController extends Controller
     public function show($id)
     {
         $match = MatchGame::with(['equipo1', 'equipo2', 'torneo'])->find($id);
-        $match->load('mvp');
 
         if (!$match) {
             return response()->json(['success' => false, 'message' => 'Partido no encontrado'], 404);
         }
+
+        $tournament = $match->torneo;
+
+        if ($tournament->visibilidad === 'privado') {
+            $user = auth('sanctum')->user();
+
+            if (
+                !$user || (
+                    $tournament->user_id !== $user->id &&
+                    !$tournament->invitedUsers()->where('user_id', $user->id)->exists()
+                )
+            ) {
+                return response()->json(['success' => false, 'message' => 'No tienes permisos para ver este partido.'], 403);
+            }
+        }
+
+        $match->load('mvp');
 
         return response()->json(['success' => true, 'data' => $match]);
     }

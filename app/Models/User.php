@@ -68,4 +68,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Tournament::class, 'tournament_user')->withPivot('role')->withTimestamps();
     }
 
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+    
+
 }

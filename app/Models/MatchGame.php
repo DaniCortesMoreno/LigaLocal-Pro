@@ -50,5 +50,10 @@ class MatchGame extends Model
         return $this->belongsTo(Player::class, 'mvp_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'match_game_id');
+    }
+
 
 }

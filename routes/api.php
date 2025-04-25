@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\MatchGameController;
 use App\Http\Controllers\Api\PlayerMatchGameController;
 use App\Http\Controllers\Api\TournamentInvitationController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CommentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AuthController;
@@ -23,6 +24,9 @@ Route::get('/teams/{team}', [TeamController::class, 'show']);
 Route::get('/players/{player}', [PlayerController::class, 'show']);
 Route::get('/tournaments/{tournament}/match_games', [MatchGameController::class, 'getByTournament']);
 
+Route::get('/match_games/{match}', [MatchGameController::class, 'show']); // ⬅️ Añadir esto
+
+Route::get('/partidos/{match}/comentarios', [CommentController::class, 'index']);
 
 Route::get('/tournaments/{tournament}/clasificacion', [TournamentController::class, 'clasificacion']);
 Route::get('/tournaments/{tournament}/ranking', [TournamentController::class, 'rankingEstadisticas']);
@@ -40,7 +44,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/me', function (Request $request) {
         return $request->user();
     });
-
     // CRUDs
     Route::get('/tournaments/private', [TournamentController::class, 'privateTournaments']);
     Route::get('/tournaments/user/{id}', [TournamentController::class, 'tournamentsByUser']);
@@ -48,8 +51,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('tournaments', TournamentController::class)->except(['show']);
     Route::apiResource('teams', TeamController::class)->except(['show']);
     Route::apiResource('players', PlayerController::class)->except(['show']);
-    Route::apiResource('match_games', MatchGameController::class);
+    Route::apiResource('match_games', MatchGameController::class)->except(['show']);
     Route::apiResource('users', UserController::class)->except(['store', 'show']);
+
+    Route::post('/partidos/{match}/comentarios', [CommentController::class, 'store']);
+
 
     Route::get('/tournaments/{tournament}/invited-users', [TournamentController::class, 'invitedUsers']);
 
