@@ -16,4 +16,10 @@ class Comment extends Model
     {
         return $this->belongsTo(MatchGame::class, 'match_game_id');
     }
+
+    public function matchGame()
+    {
+        return $this->belongsTo(MatchGame::class, 'match_game_id');
+    }
+
 }

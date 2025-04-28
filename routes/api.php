@@ -55,7 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('users', UserController::class)->except(['store', 'show']);
 
     Route::post('/partidos/{match}/comentarios', [CommentController::class, 'store']);
-
+    Route::delete('/comentarios/{comment}', [CommentController::class, 'destroy']);
 
     Route::get('/tournaments/{tournament}/invited-users', [TournamentController::class, 'invitedUsers']);
 
