@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\MatchGameController;
+use App\Http\Controllers\Api\PDFController;
 use App\Http\Controllers\Api\PlayerMatchGameController;
 use App\Http\Controllers\Api\TournamentInvitationController;
 use App\Http\Controllers\Api\UserController;
@@ -74,6 +75,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/tournaments/{tournament}/abandonar', [TournamentController::class, 'abandonarTorneo']);
     Route::delete('/tournaments/{tournament}/expulsar/{user}', [TournamentController::class, 'expulsarInvitado']);
 
+    Route::get('/tournaments/{tournament}/descargar-partidos', [PDFController::class, 'descargarPartidos']);
 
     // Aquí podrías aplicar roles cuando tengas el middleware
     // Route::middleware('role:admin')->group(...);
