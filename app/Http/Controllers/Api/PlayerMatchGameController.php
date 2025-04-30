@@ -19,6 +19,7 @@ class PlayerMatchGameController extends Controller
             'stats.*.asistencias' => 'nullable|integer|min:0',
             'stats.*.amarillas' => 'nullable|integer|min:0|max:2',
             'stats.*.rojas' => 'nullable|integer|min:0|max:1',
+            'stats.*.partidos_jugados' => 'nullable|integer|min:0',
         ]);
 
         foreach ($request->stats as $stat) {
@@ -34,6 +35,7 @@ class PlayerMatchGameController extends Controller
                 $player->asistencias -= $pivot->asistencias ?? 0;
                 $player->amarillas -= $pivot->amarillas ?? 0;
                 $player->rojas -= $pivot->rojas ?? 0;
+                $player->partidos_jugados -= $pivot->partidos_jugados ?? 0;
             }
 
             // Sumar nuevas estadísticas (se puede usar 0 por defecto)
@@ -41,6 +43,7 @@ class PlayerMatchGameController extends Controller
             $player->asistencias += $stat['asistencias'] ?? 0;
             $player->amarillas += $stat['amarillas'] ?? 0;
             $player->rojas += $stat['rojas'] ?? 0;
+            $player->partidos_jugados += $stat['partidos_jugados'] ?? 0;
             $player->save();
 
             // Actualizar en tabla intermedia
@@ -50,6 +53,7 @@ class PlayerMatchGameController extends Controller
                     'asistencias' => $stat['asistencias'] ?? 0,
                     'amarillas' => $stat['amarillas'] ?? 0,
                     'rojas' => $stat['rojas'] ?? 0,
+                    'partidos_jugados' => $stat['partidos_jugados'] ?? 0,
                 ]
             ]);
         }
@@ -62,7 +66,7 @@ class PlayerMatchGameController extends Controller
     // Obtener estadísticas de un partido
     public function show(MatchGame $match)
     {
-        $stats = $match->players()->withPivot(['goles', 'asistencias', 'amarillas', 'rojas'])->get();
+        $stats = $match->players()->withPivot(['goles', 'asistencias', 'amarillas', 'rojas', 'partidos_jugados'])->get();
 
         return response()->json([
             'success' => true,

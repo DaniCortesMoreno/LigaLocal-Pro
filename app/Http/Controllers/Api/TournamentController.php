@@ -304,7 +304,8 @@ class TournamentController extends Controller
                 \DB::raw('SUM(goles) as total_goles'),
                 \DB::raw('SUM(asistencias) as total_asistencias'),
                 \DB::raw('SUM(amarillas) as total_amarillas'),
-                \DB::raw('SUM(rojas) as total_rojas')
+                \DB::raw('SUM(rojas) as total_rojas'),
+                \DB::raw('COUNT(*) as total_partidos_jugados')
             )
             ->whereIn('match_game_id', $matchIds)
             ->groupBy('player_id')
@@ -326,6 +327,7 @@ class TournamentController extends Controller
                 'asistencias' => $stat->total_asistencias,
                 'amarillas' => $stat->total_amarillas,
                 'rojas' => $stat->total_rojas,
+                'partidos_jugados' => $stat->total_partidos_jugados,
             ];
         });
 

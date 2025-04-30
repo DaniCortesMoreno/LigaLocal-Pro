@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->integer('dorsal');
             $table->string('posición')->nullable()->default(null); // También puedes usar enum si lo prefieres
             $table->enum('estado', ['activo', 'lesionado', 'suspendido'])->default('activo');
+            $table->integer('partidos_jugados')->default(0)->nullable();
             $table->integer('goles')->default(0)->nullable();
             $table->integer('asistencias')->default(0)->nullable();
             $table->integer('amarillas')->default(0)->nullable();

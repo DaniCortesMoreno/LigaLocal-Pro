@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('player_id')->constrained()->onDelete('cascade');
             $table->foreignId('match_game_id')->constrained()->onDelete('cascade');
+            $table->integer('partidos_jugados')->default(0);
             $table->integer('goles')->default(0);
             $table->integer('asistencias')->default(0);
             $table->integer('amarillas')->default(0);

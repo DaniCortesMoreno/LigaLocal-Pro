@@ -28,6 +28,7 @@ class PlayerSeeder extends Seeder
                     'dorsal' => $i,
                     'posición' => $faker->randomElement(['portero', 'defensa', 'centrocampista', 'delantero']),
                     'estado' => 'activo',
+                    'partidos_jugados' => rand(0, 0),
                     'goles' => rand(0, 0),
                     'asistencias' => rand(0, 0),
                     'amarillas' => rand(0, 0),
