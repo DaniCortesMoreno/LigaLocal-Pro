@@ -21,7 +21,7 @@ class CommentController extends Controller
         $comentarios = $match->comments()
             ->with('user')
             ->latest()
-            ->paginate(10); // o el número que quieras por página
+            ->paginate(10);
 
         return response()->json([
             'success' => true,

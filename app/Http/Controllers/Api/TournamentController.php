@@ -364,7 +364,7 @@ class TournamentController extends Controller
             $potencia = pow(2, ceil(log($total, 2)));
             $byes = $potencia - $total;
 
-            $rondas = log($potencia, 2); // Total de rondas (1/8, 1/4, semi, final...)
+            $rondas = log($potencia, 2);
 
             $partidosPorRonda = [];
 

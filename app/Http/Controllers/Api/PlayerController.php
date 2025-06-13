@@ -15,7 +15,7 @@ class PlayerController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $players = Player::with('team')->get(); // Asumiendo que hay relación con Team
+        $players = Player::with('team')->get();
         return response()->json($players);
     }
 

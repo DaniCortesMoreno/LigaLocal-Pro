@@ -11,7 +11,7 @@ class PDFController extends Controller
 {
     public function descargarPartidos(Tournament $tournament)
     {
-        // Puedes aplicar aquí una autorización si quieres
+        // Se puede aplicar aquí una autorización si quieres
         // $this->authorize('view', $tournament);
 
         $partidos = $tournament->matches()->with(['equipo1', 'equipo2'])->get();

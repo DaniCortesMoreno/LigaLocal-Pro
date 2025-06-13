@@ -47,7 +47,6 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        // ✅ Cargar de una vez matchGame + torneo
         $comment->loadMissing('matchGame.torneo');
 
         $match = $comment->matchGame;
@@ -62,17 +61,17 @@ class CommentPolicy
             return false;
         }
 
-        // ✅ Si el usuario es el creador del torneo
+        // Si el usuario es el creador del torneo
         if ($user->id === $tournament->user_id) {
             return true;
         }
 
-        // ✅ Si es el propietario del comentario
+        // Si es el propietario del comentario
         if ($user->id === $comment->user_id) {
             return true;
         }
 
-        // ✅ Si es invitado como "editor"
+        // Si es invitado como "editor"
         return $tournament->invitedUsers()
             ->where('user_id', $user->id)
             ->where('tournament_user.role', 'editor')

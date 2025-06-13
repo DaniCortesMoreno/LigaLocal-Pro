@@ -13,7 +13,6 @@ use App\Http\Controllers\Api\TournamentController;
 use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\PlayerController;
 
-// Rutas públicas
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/tournaments/public', [TournamentController::class, 'publicTournaments']);
@@ -25,7 +24,7 @@ Route::get('/teams/{team}', [TeamController::class, 'show']);
 Route::get('/players/{player}', [PlayerController::class, 'show']);
 Route::get('/tournaments/{tournament}/match_games', [MatchGameController::class, 'getByTournament']);
 
-Route::get('/match_games/{match}', [MatchGameController::class, 'show']); // ⬅️ Añadir esto
+Route::get('/match_games/{match}', [MatchGameController::class, 'show']);
 
 Route::get('/partidos/{match}/comentarios', [CommentController::class, 'index']);
 
@@ -38,14 +37,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/tournaments/{tournament}/invite/{user}', [TournamentInvitationController::class, 'removeInvite']);
 });
 
-// Rutas protegidas
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
         return $request->user();
     });
-    // CRUDs
     Route::get('/tournaments/private', [TournamentController::class, 'privateTournaments']);
     Route::get('/tournaments/user/{id}', [TournamentController::class, 'tournamentsByUser']);
 
@@ -77,7 +74,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/tournaments/{tournament}/descargar-partidos', [PDFController::class, 'descargarPartidos']);
 
-    // Aquí podrías aplicar roles cuando tengas el middleware
     // Route::middleware('role:admin')->group(...);
     Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         Route::get('/admin-area', fn() => 'Bienvenido, Admin');

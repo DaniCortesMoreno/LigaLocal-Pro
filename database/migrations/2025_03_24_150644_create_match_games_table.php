@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->dateTime('fecha_partido')->nullable();
             $table->unsignedTinyInteger('goles_equipo1')->nullable();
             $table->unsignedTinyInteger('goles_equipo2')->nullable();
-            $table->string('estado_partido'); // Ej: "pendiente", "jugado", "cancelado"
+            $table->string('estado_partido');
             $table->string('arbitro')->nullable();
             $table->timestamps();
         });
